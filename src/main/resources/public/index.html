@@ -15,19 +15,20 @@
 <body>
     <h1>Blueprints</h1>
     <input id="author" type="text" value="Author's name">
-    <input type="submit" value="Get BluePrints">
-    <br></br>
-    <table>
+    <input type="submit" value="Get BluePrints" onclick="app.getAuthorBlueprints()">
+    <br>
+    <table id="author-bpTable">
         <tr>
             <th>Blueprint name</th>
             <th>Number Of points</th>
             <th>Open</th>
         </tr>
-        <tr>
-            <td>Alfreds Futterkiste</td>
-            <td>Maria Anders</td>
-            <td>Germany</td>
-        </tr>
     </table>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <label>Total User Points: </label> <label id="totalAuthorPoints"></label>
 </body>
 </html>
