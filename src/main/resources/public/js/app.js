@@ -14,19 +14,24 @@ var app = (function(){
         blueprintsByNameAndAuthor = object;
     }
     function searchBlueprintPoints(authorName, blueprintName){
-            apimock.getBlueprintsByNameAndAuthor(authorName,blueprintName,getBlueprintsByNameAndAuthor);
-
-            var blueprintPoints = blueprintsByNameAndAuthor.points;
-            console.log(blueprintPoints);
-            draw(blueprintPoints);
+            apiclient.getBlueprintsByNameAndAuthor(authorName,blueprintName,(req,resp) => {
+                draw(resp);
+            });
     }
     function getAuthorBlueprints(){
         author = getSelectedAuthor();
+        apiclient.getBlueprintsByAuthor(author, (req,resp) => {
+            parseData(resp);
+            console.log(resp);
+        });
+    }
+    function parseData(data){
+        console.log("Data" + data)
+        author = getSelectedAuthor();
         console.log(author);
-        apimock.getBlueprintsByAuthor(author,getBlueprints);
         console.log(blueprints);
         var blueprintsCopy = blueprints;
-        var blueprintMapped = blueprintsCopy.map((bp) => {return {name:bp.name, pointsNumber:bp.points.length}
+        var blueprintMapped = data.map((bp) => {return {name:bp.name, pointsNumber:bp.points.length}
         });
         var blueprintAuthorTable = blueprintMapped.map(function(bpm){
             var row = "<tr><td align=\"center\" id=\""+bpm.name+"_\">"+bpm.name+"</td><td align=\"center\">"+bpm.pointsNumber+"</td><td align=\"center\">"+"<button onclick=\"app.searchBlueprintPoints('"+author+"','"+bpm.name+"')\" type='button' class='btn btn-primary'>Open</button>"+"</td></tr>"
@@ -45,13 +50,14 @@ var app = (function(){
 
     function draw(blueprintPoints){
         console.log("ENTROOO");
+        console.log("BLUEPRINTPOINTS"+ blueprintPoints);
         var canvas = document.getElementById('blueprintCanvas');
         canvas.width = canvas.width;
         var ctx = canvas.getContext("2d");
 
-        for(var i=0; i<blueprintPoints.length-1; i++){
-            ctx.moveTo(blueprintPoints[i].x,blueprintPoints[i].y);
-            ctx.lineTo(blueprintPoints[i+1].x,blueprintPoints[i+1].y);
+        for(var i=0; i<blueprintPoints.points.length-1; i++){
+            ctx.moveTo(blueprintPoints.points[i].x,blueprintPoints.points[i].y);
+            ctx.lineTo(blueprintPoints.points[i+1].x,blueprintPoints.points[i+1].y);
             ctx.stroke();
         }
 
@@ -70,4 +76,3 @@ var app = (function(){
     }
 
 })();
-app;
