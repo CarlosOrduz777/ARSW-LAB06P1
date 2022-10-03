@@ -5,7 +5,7 @@ apiclient=(function(){
                               url: "/blueprints/" + authname,
                               contentType: "application/json"
                             });
-
+            console.log("Promesa: "+promise);
             promise.then(function(data){
                 callback(null,data);
             },function(error){
