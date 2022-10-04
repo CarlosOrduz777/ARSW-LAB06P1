@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -88,6 +85,8 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
 
         bp.setAuthor(author);
         bp.setName(name);
+        bp.setPoints(blueprintToUpdate.getPoints());
+        System.out.println("New bp:   "+ bp.toString());
         return bp;
     }
     

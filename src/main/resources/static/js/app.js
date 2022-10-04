@@ -94,8 +94,8 @@ var app = (function(){
     }
 
      function saveBlueprint(){
-        author = getSelectedAuthor();
-        let data = "{author:"+author+",name:"+blueprint.name+",points:"+JSON.stringify(blueprintsPoints.points)+"}";
+        authorName = getSelectedAuthor();
+        let data = JSON.stringify({author:authorName,name:blueprint.name,points:blueprintsPoints.points});
 
         apiclient.saveBlueprint(data,author,blueprint.name,(req,resp) => {
 
