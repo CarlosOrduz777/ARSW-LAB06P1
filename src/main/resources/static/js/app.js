@@ -1,5 +1,6 @@
 var app = (function(){
     var author;
+    var blueprint;
     var blueprints;
     var blueprintsPoints=[];
     var pointsSelected = [];
@@ -20,6 +21,7 @@ var app = (function(){
             apiclient.getBlueprintsByNameAndAuthor(authorName,blueprintName,(req,resp) => {
                 draw(resp);
                 getBlueprintsPoints(resp);
+                blueprint = resp;
             });
     }
     function getAuthorBlueprints(){
@@ -84,16 +86,21 @@ var app = (function(){
             console.log(blueprintsPoints);
             var startX = (blueprintsPoints.points[blueprintsPoints.points.length - 1].x)
             var startY = (blueprintsPoints.points[blueprintsPoints.points.length - 1].y)
-            blueprintsPoints.points.push({'x':CordX,'y':CordY});
+            blueprintsPoints.points.push({x:CordX,y:CordY});
             context.moveTo(startX,startY);
             context.lineTo(CordX, CordY);
             context.stroke();
         }
     }
 
-    function putNewPoints(){
+     function saveBlueprint(){
+        author = getSelectedAuthor();
+        let data = "{author:"+author+",name:"+blueprint.name+",points:"+JSON.stringify(blueprintsPoints.points)+"}";
 
-    }
+        apiclient.saveBlueprint(data,author,blueprint.name,(req,resp) => {
+
+        });
+     }
 
 
 
@@ -103,6 +110,7 @@ var app = (function(){
         },
         getAuthorBlueprints: getAuthorBlueprints,
         searchBlueprintPoints: searchBlueprintPoints,
+        saveBlueprint:saveBlueprint,
         init: init
 
     }

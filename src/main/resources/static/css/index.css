@@ -17,3 +17,14 @@
 .canvas-container {
     width: 50%;
 }
+
+.buttons-save-update {
+     padding: 15px 42px;
+     border-radius: 15px;
+     text-align: center;
+     font-size: 16px;
+     margin: 8px 10px;
+     position: fixed;
+     left: 50%;
+     top: 300px;
+}

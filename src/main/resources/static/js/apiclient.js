@@ -24,6 +24,22 @@ apiclient=(function(){
                         },function(error){
                             alert("No existe este autor")
                         });
+        },
+        saveBlueprint:function(sdata,authname,bpname,callback){
+            console.log("entra al apiclient");
+            console.log(sdata);
+            const promise = $.ajax({
+                                  url: "/blueprints/addBlueprint/"+authname+"/"+bpname,
+                                  type: 'PUT',
+                                  data: sdata,
+                                  contentType: "application/json"
+              }).done(function () {
+                  console.log('SUCCESS');
+              }).fail(function (msg) {
+                  console.log('FAIL');
+              }).always(function (msg) {
+                  console.log('ALWAYS');
+              });
         }
 
     }
