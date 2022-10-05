@@ -5,6 +5,9 @@ var app = (function(){
     var blueprintsPoints=[];
     var pointsSelected = [];
     var blueprintSel = false;
+    var oldpoints;
+    var oldpointsbp;
+    var blueprintAdded;
 
 
     var getSelectedAuthor = function(){
@@ -39,8 +42,9 @@ var app = (function(){
         var blueprintsCopy = blueprints;
         var blueprintMapped = data.map((bp) => {return {name:bp.name, pointsNumber:bp.points.length}
         });
+
         var blueprintAuthorTable = blueprintMapped.map(function(bpm){
-            var row = "<tbody><tr class='table-secondary'><td align=\"center\" id=\""+bpm.name+"_\">"+bpm.name+"</td><td align=\"center\">"+bpm.pointsNumber+"</td><td align=\"center\">"+"<button onclick=\"app.searchBlueprintPoints('"+author+"','"+bpm.name+"')\" type='button' class='btn btn-primary'>Open</button>"+"</td></tr></tbody>"
+            var row = "<tbody><tr class='table-secondary'><td align=\"center\" id=\""+bpm.name+"_\">"+bpm.name+"</td><td id=\""+bpm.name+"points\"' align=\"center\">"+bpm.pointsNumber+" </td><td align=\"center\">"+"<button onclick=\"app.searchBlueprintPoints('"+author+"','"+bpm.name+"')\" type='button' class='btn btn-primary'>Open</button>"+"</td></tr></tbody>"
             $("#author-bpTable").append(row);
             return row;
         });
@@ -49,6 +53,7 @@ var app = (function(){
         console.log(pointsMapped);
         var totalAuthorPoints = pointsMapped.reduce((previousValue,currentValue) => previousValue + currentValue,0);
         console.log(totalAuthorPoints);
+        oldpoints = totalAuthorPoints;
         $("#totalAuthorPoints").text(totalAuthorPoints);
 
     }
@@ -65,7 +70,7 @@ var app = (function(){
             ctx.lineTo(blueprintPoints.points[i].x,blueprintPoints.points[i].y);
         }
         ctx.stroke();
-
+        oldpointsbp = blueprintPoints.points.length;
         init();
     }
 
@@ -86,7 +91,11 @@ var app = (function(){
             console.log(blueprintsPoints);
             var startX = (blueprintsPoints.points[blueprintsPoints.points.length - 1].x)
             var startY = (blueprintsPoints.points[blueprintsPoints.points.length - 1].y)
+            blueprintAdded = blueprintsPoints.points.length;
+            console.log("puntos originales"+blueprintAdded)
             blueprintsPoints.points.push({x:CordX,y:CordY});
+            blueprintAdded = blueprintsPoints.points.length - blueprintAdded;
+            console.log("puntos añadidos en el push"+blueprintAdded)
             context.moveTo(startX,startY);
             context.lineTo(CordX, CordY);
             context.stroke();
@@ -98,7 +107,10 @@ var app = (function(){
         let data = JSON.stringify({author:authorName,name:blueprint.name,points:blueprintsPoints.points});
 
         apiclient.saveBlueprint(data,author,blueprint.name,(req,resp) => {
-
+            var numberPointsColumn = blueprint.points.length;
+            document.getElementById(blueprint.name+"points").innerHTML = numberPointsColumn + blueprintAdded;
+            var totalPoint = oldpoints + blueprintAdded;
+            $("#totalAuthorPoints").text(totalpoint);
         });
      }
 

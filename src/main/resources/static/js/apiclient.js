@@ -22,7 +22,7 @@ apiclient=(function(){
                         promise.then(function(data){
                             callback(null,data);
                         },function(error){
-                            alert("No existe este autor")
+                            alert("No existe author")
                         });
         },
         saveBlueprint:function(sdata,authname,bpname,callback){
@@ -32,14 +32,13 @@ apiclient=(function(){
                                   url: "/blueprints/addBlueprint/"+authname+"/"+bpname,
                                   type: 'PUT',
                                   data: sdata,
-                                  contentType: "application/json"
-              }).done(function () {
-                  console.log('SUCCESS');
-              }).fail(function (msg) {
-                  console.log('FAIL');
-              }).always(function (msg) {
-                  console.log('ALWAYS');
+                                  contentType: "application/json; charset=utf-8"
               });
+               promise.then(function(data){
+                                            callback(null,data);
+                                        },function(error){
+                                            alert("No existe autor y blueprint")
+                                        });
         }
 
     }
