@@ -76,10 +76,6 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
 
     @Override
     public Blueprint updateBluePrint(Blueprint blueprintToUpdate,String author,String name) {
-        for (Blueprint bp: getAllBlueprints()) {
-            System.out.println("Blueprint:--------------"+ bp.toString());
-        }
-        System.out.println("----------------"+blueprintToUpdate.toString()+"....................................");
         Blueprint bp  = getAllBlueprints().stream().filter(bps -> (bps.getName().equals(blueprintToUpdate.getName()) && bps.getAuthor().equals(blueprintToUpdate.getAuthor()))).findAny().get();
 
 
@@ -89,6 +85,9 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
         System.out.println("New bp:   "+ bp.toString());
         return bp;
     }
-    
+    @Override
+    public void deleteBluePrint(String author, String bpname) throws BlueprintNotFoundException {
+        blueprints.remove(new Tuple<>(author,bpname));
+    }
     
 }

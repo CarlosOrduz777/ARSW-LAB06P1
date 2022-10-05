@@ -13,7 +13,13 @@ import java.util.Set;
 public class bluePrintsUndersampling implements bluePrintsFilters {
     @Override
     public Blueprint filtrar(Blueprint blueprint) {
-        List<Point> copyPoints = new ArrayList<>(blueprint.getPoints());
+        List<Point> copyPoints;
+        if (blueprint.getPoints()!=null){
+            copyPoints  = new ArrayList<>(blueprint.getPoints());
+        }else {
+           copyPoints = new ArrayList<>();
+        }
+
 
         List<Integer> pairIndexes = generatePairIndexes(copyPoints.size());
         List<Integer> unpairIndexes = generateUnpairIndexes(copyPoints.size());
@@ -30,7 +36,14 @@ public class bluePrintsUndersampling implements bluePrintsFilters {
     public Set<Blueprint> filterByAuthor(Set<Blueprint> blueprints) {
         Set<Blueprint> bpResult = new HashSet<>();
         for (Blueprint bp: blueprints){
-            Blueprint bpFilter = filtrar(bp);
+            Blueprint bpFilter;
+            if (bp.getPoints()!=null){
+                bpFilter = filtrar(bp);
+            }else {
+                bpFilter = bp;
+            }
+
+
             bpResult.add(bpFilter);
         }
         return bpResult;

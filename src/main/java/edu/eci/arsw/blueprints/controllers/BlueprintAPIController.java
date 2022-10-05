@@ -33,7 +33,7 @@ public class BlueprintAPIController {
         return new ResponseEntity<Set<?>>(blueprintsServices.getAllBlueprints(), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("{author}")
+    @GetMapping("/{author}")
     public ResponseEntity<Set<?>> getblueprintbyauthor(@PathVariable String author) throws BlueprintNotFoundException {
         Set<Blueprint> compare = new HashSet<>();
         if( !blueprintsServices.getBlueprintsByAuthor(author).equals(compare)){
@@ -55,6 +55,7 @@ public class BlueprintAPIController {
 
     @PostMapping("/addBlueprint")
     public ResponseEntity<Blueprint> postBlueprint(@RequestBody Blueprint bp){
+        System.out.println("Entroooooooooooooooooooooo"+ bp.getName() + " " +bp.getAuthor());
         blueprintsServices.addNewBlueprint(bp);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -63,6 +64,11 @@ public class BlueprintAPIController {
     public ResponseEntity<Blueprint> replaceBlueprint(@RequestBody Blueprint blueprintUpdate,@PathVariable String author,@PathVariable String bpname){
         blueprintsServices.updateBluePrint(blueprintUpdate,author,bpname);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/deletebp/{author}/{bpname}")
+    public ResponseEntity<?>  deleteblueprint(@PathVariable String author, @PathVariable String bpname) {
+        return blueprintsServices.deleteBlueprint(author,bpname);
     }
 
 }

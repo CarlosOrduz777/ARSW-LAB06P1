@@ -7,7 +7,7 @@ var app = (function(){
     var blueprintSel = false;
     var oldpoints;
     var oldpointsbp;
-    var blueprintAdded;
+    var blueprintAdded = 0;
 
 
     var getSelectedAuthor = function(){
@@ -22,9 +22,13 @@ var app = (function(){
     }
     function searchBlueprintPoints(authorName, blueprintName){
             apiclient.getBlueprintsByNameAndAuthor(authorName,blueprintName,(req,resp) => {
+                if(resp.points === null){
+                    resp.points = [{x:0,y:0}];
+                }
                 draw(resp);
                 getBlueprintsPoints(resp);
                 blueprint = resp;
+                blueprintAdded = 0;
             });
     }
     function getAuthorBlueprints(){
@@ -34,13 +38,35 @@ var app = (function(){
             getBlueprints(resp);
         });
     }
+    function clearAll() {
+            $("#author-bpTable tbody").remove();
+            //$("#popup").css("visibility", "hidden");
+            clearCanvas();
+            const c = document.getElementById("blueprintCanvas");
+            const ctx = c.getContext("2d");
+            ctx.clearRect(0, 0, c.width, c.height);
+            ctx.restore();
+            ctx.beginPath();
+        }
+    function clearCanvas(){
+            console.log("sadsadasdasd");
+            $("#blueprintCanvas").click(function () {
+                return false;
+            });
+        }
     function parseData(data){
         console.log("Data" + data)
         author = getSelectedAuthor();
         console.log(author);
         console.log(blueprints);
         var blueprintsCopy = blueprints;
-        var blueprintMapped = data.map((bp) => {return {name:bp.name, pointsNumber:bp.points.length}
+        var blueprintMapped = data.map((bp) => {
+            if(bp.points != null){
+                return {name:bp.name, pointsNumber:bp.points.length}
+            }else{
+                return {name:bp.name, pointsNumber:0}
+            }
+
         });
 
         var blueprintAuthorTable = blueprintMapped.map(function(bpm){
@@ -60,6 +86,7 @@ var app = (function(){
 
 
     function draw(blueprintPoints){
+
         const canvas = document.getElementById("blueprintCanvas"),
                              ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -89,12 +116,10 @@ var app = (function(){
             var CordX = e.clientX - offset.left;
             var CordY = e.clientY - offset.top;
             console.log(blueprintsPoints);
-            var startX = (blueprintsPoints.points[blueprintsPoints.points.length - 1].x)
-            var startY = (blueprintsPoints.points[blueprintsPoints.points.length - 1].y)
-            blueprintAdded = blueprintsPoints.points.length;
-            console.log("puntos originales"+blueprintAdded)
+            var startX = (blueprintsPoints.points[blueprintsPoints.points.length - 1].x);
+            var startY = (blueprintsPoints.points[blueprintsPoints.points.length - 1].y);
             blueprintsPoints.points.push({x:CordX,y:CordY});
-            blueprintAdded = blueprintsPoints.points.length - blueprintAdded;
+            blueprintAdded += 1;
             console.log("puntos añadidos en el push"+blueprintAdded)
             context.moveTo(startX,startY);
             context.lineTo(CordX, CordY);
@@ -107,13 +132,43 @@ var app = (function(){
         let data = JSON.stringify({author:authorName,name:blueprint.name,points:blueprintsPoints.points});
 
         apiclient.saveBlueprint(data,author,blueprint.name,(req,resp) => {
-            var numberPointsColumn = blueprint.points.length;
-            document.getElementById(blueprint.name+"points").innerHTML = numberPointsColumn + blueprintAdded;
-            var totalPoint = oldpoints + blueprintAdded;
-            $("#totalAuthorPoints").text(totalpoint);
+            //var numberPointsColumn = blueprints.filter(bp => bp.name === blueprint.name)[0].points.length;
+            //console.log("Number Points Column" + numberPointsColumn)
+            //document.getElementById(blueprint.name+"points").innerHTML = numberPointsColumn + blueprintAdded;
+            //var totalPoint = oldpoints + blueprintAdded;
+            //$("#totalAuthorPoints").text(totalPoint);
+            $("table tbody").remove();
+            getAuthorBlueprints();
         });
      }
 
+     function postNewBlueprint(){
+        clearAll();
+        var newBluePrintName = $('#newBpName').val();
+        var json = JSON.stringify({author:getSelectedAuthor(),name:newBluePrintName});
+        apiclient.postBlueprint(json,(req,resp) =>{
+            getAuthorBlueprints();
+        });
+
+     }
+
+     function inputName(){
+        const elem = document.getElementById("blueprintCanvas");
+        elem.width += 0;
+        document.getElementById('popup').style.display = 'block';
+     }
+    function deleteBlueprint(){
+          const canvas = document.getElementById("blueprintCanvas"),
+                                      ctx = canvas.getContext('2d');
+             authorName = getSelectedAuthor();
+             ctx.clearRect(0, 0, canvas.width, canvas.height);
+             ctx.restore();
+             ctx.beginPath();
+             apiclient.deletePrint(authorName,blueprint.name,(req,resp) => {
+                 $("table tbody").remove();
+                 getAuthorBlueprints();
+             });
+         }
 
 
     return{
@@ -123,7 +178,10 @@ var app = (function(){
         getAuthorBlueprints: getAuthorBlueprints,
         searchBlueprintPoints: searchBlueprintPoints,
         saveBlueprint:saveBlueprint,
-        init: init
+        inputName:inputName,
+        init: init,
+        postNewBlueprint:postNewBlueprint,
+        deleteBlueprint:deleteBlueprint
 
     }
 

@@ -39,7 +39,35 @@ apiclient=(function(){
                                         },function(error){
                                             alert("No existe autor y blueprint")
                                         });
-        }
+        },
+        postBlueprint:function(bpname,callback){
+            const promise = $.ajax({
+                                              url: "/blueprints/addBlueprint/",
+                                              type: 'POST',
+                                              data: bpname,
+                                              contentType: "application/json; charset=utf-8"
+                          });
+                           promise.then(function(data){
+                                                        console.log("promise correct")
+                                                        callback(null,data);
+                                                    },function(error){
+                                                        alert("No se logró crear el blueprint")
+                                                    });
+
+        },
+          deletePrint:function(author,bpname,callback){
+                     console.log("delete apiclient")
+          const promise = $.ajax({
+                         url: "/blueprints/deletebp/"+author+"/"+bpname,
+                         type: 'DELETE',
+                         contentType: "application/json"
+                     });
+                     promise.then(function(data){
+                             callback(null,data);
+                         },function(error){
+                             alert("No existe autor y blueprint")
+                         });
+          }
 
     }
 

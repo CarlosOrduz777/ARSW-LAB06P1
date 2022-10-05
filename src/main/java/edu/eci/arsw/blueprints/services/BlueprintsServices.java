@@ -11,6 +11,8 @@ import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,7 +47,13 @@ public class BlueprintsServices {
     public Set<Blueprint> getAllBlueprints(){
         Set<Blueprint> filterBlueprints = new HashSet<>();
         for (Blueprint bp: bpp.getAllBlueprints()) {
-            Blueprint bpFiltered = bpf.filtrar(bp);
+            Blueprint bpFiltered;
+            if(bp.getPoints()!= null){
+                bpFiltered = bpf.filtrar(bp);
+            }else{
+                bpFiltered = bp;
+            }
+
             filterBlueprints.add(bpFiltered);
         }
         return filterBlueprints;
@@ -62,7 +70,10 @@ public class BlueprintsServices {
         try{
             if(bpp.getBlueprint(author, name)!= null){
                 Blueprint bp =  bpp.getBlueprint(author, name);
-                return bpf.filtrar(bp);
+                if (bp.getPoints()!=null){
+                    bpf.filtrar(bp);
+                }
+                return bp;
             }
         }catch (BlueprintNotFoundException b){
             return new Blueprint(author,"no se enontro blueprint"+name);
@@ -92,6 +103,15 @@ public class BlueprintsServices {
 
     public Blueprint updateBluePrint(Blueprint blueprintToUpdate,String author,String name) {
         return bpp.updateBluePrint(blueprintToUpdate,author,name);
+    }
+    public ResponseEntity<?> deleteBlueprint(String author, String bpname) {
+        try {
+            bpp.deleteBluePrint(author, bpname);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }catch (BlueprintNotFoundException e) {
+            new ResponseEntity<>("No exite el plano con el nombre dado",HttpStatus.NOT_FOUND);
+        }
+        return null;
     }
 
 
