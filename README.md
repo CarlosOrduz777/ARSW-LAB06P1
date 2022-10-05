@@ -1,5 +1,9 @@
 # Laboratorio 6 parte 1
 ## Laura Valentina Alvarado,Carlos Orduz
+### Diagrama de componentes
+
+![imagen](https://user-images.githubusercontent.com/98195579/193982517-68f30f13-f138-4b19-80ff-2ee207a2319d.png)
+
 ### Front-End - Vistas
 1.Cree el directorio donde residirá la aplicación JavaScript. Como se está usando SpringBoot, la ruta para poner en el mismo contenido estático (páginas Web estáticas, aplicaciones HTML5/JS, etc) es:
 
